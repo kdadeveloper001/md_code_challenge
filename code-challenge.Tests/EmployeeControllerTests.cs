@@ -87,6 +87,7 @@ namespace code_challenge.Tests.Integration
             var employee = response.DeserializeContent<Employee>();
             Assert.AreEqual(expectedFirstName, employee.FirstName);
             Assert.AreEqual(expectedLastName, employee.LastName);
+            Assert.AreEqual(2, employee.DirectReports?.Count ?? 0);
         }
 
         [TestMethod]
@@ -137,6 +138,39 @@ namespace code_challenge.Tests.Integration
 
             // Assert
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetReporting_Returns_NotFound()
+        {
+            string invalidEmployeeId = "Invalid_Id";
+
+            // Execute
+            var postRequestTask = _httpClient.GetAsync($"api/employee/{invalidEmployeeId}/reporting");
+            var response = postRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetReporting_Returns_Ok()
+        {
+            string johnLennonEmployeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{johnLennonEmployeeId}/reporting");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var reporting = response.DeserializeContent<ReportingStructure>();
+            Assert.AreEqual("John", reporting.Employee.FirstName);
+            Assert.AreEqual("Lennon", reporting.Employee.LastName);
+            Assert.AreEqual("Development Manager", reporting.Employee.Position);
+            Assert.AreEqual("Engineering", reporting.Employee.Department);
+
+            Assert.AreEqual(4, reporting.NumberOfDirectReports);
         }
     }
 }

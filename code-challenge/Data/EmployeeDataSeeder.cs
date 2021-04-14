@@ -38,31 +38,35 @@ namespace challenge.Data
                 JsonSerializer serializer = new JsonSerializer();
 
                 List<Employee> employees = serializer.Deserialize<List<Employee>>(jr);
-                FixUpReferences(employees);
+                //FixUpReferences(employees);
 
                 return employees;
             }
         }
 
-        private void FixUpReferences(List<Employee> employees)
-        {
-            var employeeIdRefMap = from employee in employees
-                                select new { Id = employee.EmployeeId, EmployeeRef = employee };
+        //KDA Removed 4/13/21 - To avoid having to sync up data references, it is best
+        //to keep the structure as indicated in the defined JSON schema as a list of employeeIds.
+        //For example - When replacement occurs, any reference to the employee would also have to
+        //be updated.
+        //private void FixUpReferences(List<Employee> employees)
+        //{
+        //    var employeeIdRefMap = from employee in employees
+        //                           select new { Id = employee.EmployeeId, EmployeeRef = employee };
 
-            employees.ForEach(employee =>
-            {
-                
-                if (employee.DirectReports != null)
-                {
-                    var referencedEmployees = new List<Employee>(employee.DirectReports.Count);
-                    employee.DirectReports.ForEach(report =>
-                    {
-                        var referencedEmployee = employeeIdRefMap.First(e => e.Id == report.EmployeeId).EmployeeRef;
-                        referencedEmployees.Add(referencedEmployee);
-                    });
-                    employee.DirectReports = referencedEmployees;
-                }
-            });
-        }
+        //    employees.ForEach(employee =>
+        //    {
+
+        //        if (employee.DirectReports != null)
+        //        {
+        //            var referencedEmployees = new List<Employee>(employee.DirectReports.Count);
+        //            employee.DirectReports.ForEach(report =>
+        //            {
+        //                var referencedEmployee = employeeIdRefMap.First(e => e.Id == report.EmployeeId).EmployeeRef;
+        //                referencedEmployees.Add(referencedEmployee);
+        //            });
+        //            employee.DirectReports = referencedEmployees;
+        //        }
+        //    });
+        //}
     }
 }

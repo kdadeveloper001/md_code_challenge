@@ -57,5 +57,17 @@ namespace challenge.Controllers
 
             return Ok(newEmployee);
         }
+
+        [HttpGet("{id}/reporting")]
+        public IActionResult GetReportingByEmployeeId(String id)
+        {
+            _logger.LogDebug($"Recieved employee reporting get request for '{id}'");
+
+            var existingEmployee = _employeeService.GetById(id);
+            if (existingEmployee == null)
+                return NotFound();
+            var reporting = _employeeService.GetReportingByEmployee(existingEmployee);
+            return Ok(reporting);
+        }
     }
 }
