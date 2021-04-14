@@ -23,7 +23,7 @@ namespace challenge.Services
         {
             if(employee != null)
             {
-                _employeeRepository.Add(employee);
+                employee = _employeeRepository.Add(employee);
                 _employeeRepository.SaveAsync().Wait();
             }
 
@@ -58,6 +58,28 @@ namespace challenge.Services
             }
 
             return newEmployee;
+        }
+
+
+        public Compensation CreateCompensation(Compensation compensation)
+        {
+            if (compensation != null)
+            {
+                compensation = _employeeRepository.Add(compensation);
+                _employeeRepository.SaveAsync().Wait();
+            }
+
+            return compensation;
+        }
+
+        public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
+        {
+            if (!String.IsNullOrEmpty(employeeId))
+            {
+                return _employeeRepository.GetCompensationsByEmployeeId(employeeId);
+            }
+
+            return null;
         }
 
         public ReportingStructure GetReportingByEmployee(Employee employee)

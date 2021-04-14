@@ -23,13 +23,23 @@ namespace challenge.Repositories
         public Employee Add(Employee employee)
         {
             employee.EmployeeId = Guid.NewGuid().ToString();
-            _employeeContext.Employees.Add(employee);
-            return employee;
+            var ret = _employeeContext.Employees.Add(employee).Entity;
+            return ret;
         }
 
         public Employee GetById(string id)
         {
             return _employeeContext.Employees.Include("DirectReports").SingleOrDefault(e => e.EmployeeId == id);
+        }
+
+        public Compensation Add(Compensation compensation)
+        {
+            return _employeeContext.Compensations.Add(compensation).Entity;
+        }
+
+        public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
+        {
+            return _employeeContext.Compensations.Include("Employee").Where(e => e.Employee.EmployeeId == employeeId).ToList();
         }
 
         public Task SaveAsync()

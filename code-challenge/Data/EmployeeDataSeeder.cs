@@ -44,10 +44,8 @@ namespace challenge.Data
             }
         }
 
-        //KDA Removed 4/13/21 - To avoid having to sync up data references, it is best
-        //to keep the structure as indicated in the defined JSON schema as a list of employeeIds.
-        //For example - When replacement occurs, any reference to the employee would also have to
-        //be updated.
+        //KDA Removed 4/13/21 - To avoid having to link references of N depth, keep the flat list of
+        //employee Ids as a list of DirectReportEmployees.  This will allow us to map to a database structure in the future.
         //private void FixUpReferences(List<Employee> employees)
         //{
         //    var employeeIdRefMap = from employee in employees

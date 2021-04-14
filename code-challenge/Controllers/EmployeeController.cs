@@ -47,7 +47,7 @@ namespace challenge.Controllers
         [HttpPut("{id}")]
         public IActionResult ReplaceEmployee(String id, [FromBody]Employee newEmployee)
         {
-            _logger.LogDebug($"Recieved employee update request for '{id}'");
+            _logger.LogDebug($"Received employee update request for '{id}'");
 
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
@@ -61,13 +61,46 @@ namespace challenge.Controllers
         [HttpGet("{id}/reporting")]
         public IActionResult GetReportingByEmployeeId(String id)
         {
-            _logger.LogDebug($"Recieved employee reporting get request for '{id}'");
+            _logger.LogDebug($"Received employee reporting get request for '{id}'");
 
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
                 return NotFound();
             var reporting = _employeeService.GetReportingByEmployee(existingEmployee);
             return Ok(reporting);
+        }
+
+        [HttpPost("{employeeId}/compensation")]
+        public IActionResult CreateCompensation(String employeeId, [FromBody] Compensation compensation)
+        {
+            //Should not be able to create a compensation for a non-existant employee
+            var employee = _employeeService.GetById(employeeId);
+            if (employee == null)
+                return NotFound();
+            //We'd normally add some validation at a higher middleware level
+            //and provide a proper error structure.  Let's make
+            //sure we at least don't charge the employee instead of paying them :D
+            if (compensation.Salary < 0)
+                return BadRequest();
+            compensation.Employee = employee;
+            _logger.LogDebug($"Received compensation create request for employee '{compensation?.Employee?.EmployeeId ?? ""}'");
+            var createdComp = _employeeService.CreateCompensation(compensation);
+            if (createdComp == null)
+                return BadRequest();
+            return CreatedAtRoute("getCompensationByEmployeeId", createdComp);
+        }
+
+        [HttpGet("{employeeId}/compensation", Name = "getCompensationByEmployeeId")]
+        public IActionResult GetCompensationByEmployeeId(String employeeId)
+        {
+            _logger.LogDebug($"Received compensation get request for '{employeeId}'");
+
+            var compensations = _employeeService.GetCompensationsByEmployeeId(employeeId);
+
+            if (compensations == null)
+                return NotFound();
+
+            return Ok(compensations);
         }
     }
 }
