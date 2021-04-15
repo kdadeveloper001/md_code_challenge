@@ -218,7 +218,7 @@ namespace code_challenge.Tests.Integration
         [TestMethod]
         public void CreateCompensation_Multiple_Creation()
         {
-            string johnLennonEmployeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
+            string paulMcCartneyEmployeeId = "b7839309-3348-463b-a7e3-5de1c168beb3";
 
             DateTime firstEffectiveDateTime = new DateTime(2021, 5, 17);
             int firstSalary = 100;
@@ -227,7 +227,7 @@ namespace code_challenge.Tests.Integration
                 EffectiveDate = firstEffectiveDateTime,
                 Salary = firstSalary,
             };
-            PostValidCompensation(johnLennonEmployeeId, firstCompensation);
+            PostValidCompensation(paulMcCartneyEmployeeId, firstCompensation);
 
             DateTime secondEffectiveDateTime = new DateTime(2021, 6, 17);
             int secondSalary = 200;
@@ -236,9 +236,9 @@ namespace code_challenge.Tests.Integration
                 EffectiveDate = secondEffectiveDateTime,
                 Salary = secondSalary,
             };
-            PostValidCompensation(johnLennonEmployeeId, secondCompensation);
+            PostValidCompensation(paulMcCartneyEmployeeId, secondCompensation);
 
-            var getRequestTask = _httpClient.GetAsync($"api/employee/{johnLennonEmployeeId}/compensation");
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{paulMcCartneyEmployeeId}/compensation");
             var response = getRequestTask.Result;
             var createdCompensations = response.DeserializeContent<List<Compensation>>();
 
