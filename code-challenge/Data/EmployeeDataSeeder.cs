@@ -45,7 +45,8 @@ namespace challenge.Data
         }
 
         //KDA Removed 4/13/21 - To avoid having to link references of N depth, keep the flat list of
-        //employee Ids as a list of DirectReportEmployees.  This will allow us to map to a database structure in the future.
+        //employee Ids as a list of DirectReportEmployees.  This aligns more with the JSON schema.
+        //An alternative is keeping the Employees as children and using an N depth search criteria when queried (see EmployeeRespository::GetById).
         //private void FixUpReferences(List<Employee> employees)
         //{
         //    var employeeIdRefMap = from employee in employees

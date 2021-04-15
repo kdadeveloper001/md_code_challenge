@@ -29,7 +29,11 @@ namespace challenge.Repositories
 
         public Employee GetById(string id)
         {
-            return _employeeContext.Employees.Include("DirectReports").SingleOrDefault(e => e.EmployeeId == id);
+            //KDA - If we wanted to use the original structure of Employee for direct reports,
+            //we could define a max depth N and include DirectReports.DirectReports.....  This may get costly
+            //as pulling the top-most employee would grab the entire employee repository and each request for
+            //employee information would grab all subordinates.
+            return _employeeContext.Employees.Include(nameof(Employee.DirectReports)).SingleOrDefault(e => e.EmployeeId == id);
         }
 
         public Compensation Add(Compensation compensation)
@@ -39,7 +43,7 @@ namespace challenge.Repositories
 
         public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
         {
-            return _employeeContext.Compensations.Include("Employee").Where(e => e.Employee.EmployeeId == employeeId).ToList();
+            return _employeeContext.Compensations.Include(nameof(Employee)).Where(e => e.Employee.EmployeeId == employeeId).ToList();
         }
 
         public Task SaveAsync()
